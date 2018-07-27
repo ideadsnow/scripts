@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 import json
-import os
 import re
 import sys
 from subprocess import PIPE, Popen
@@ -12,22 +11,14 @@ class DouYin(object):
     def __init__(self, width=500, height=300):
         rip = '183.14.108.84'
         self.headers = {
-            'accept':
-            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'accept-encoding':
-            'gzip, deflate, br',
-            'accept-language':
-            'zh-CN,zh;q=0.9',
-            'cache-control':
-            'max-age=0',
-            'upgrade-insecure-requests':
-            '1',
-            'user-agent':
-            'Mozilla/5.0 (Linux; U; Android 5.1.1; zh-cn; MI 4S Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.146 Mobile Safari/537.36 XiaoMi/MiuiBrowser/9.1.3',
-            'X-Real-IP':
-            str(rip),
-            'X-Forwarded-For':
-            str(rip),
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'accept-encoding': 'gzip, deflate, br',
+            'accept-language': 'zh-CN,zh;q=0.9',
+            'cache-control': 'max-age=0',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Linux; U; Android 5.1.1; zh-cn; MI 4S Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.146 Mobile Safari/537.36 XiaoMi/MiuiBrowser/9.1.3',
+            'X-Real-IP': str(rip),
+            'X-Forwarded-For': str(rip),
         }
 
     def format_data(self, aweme):
@@ -42,7 +33,7 @@ class DouYin(object):
             'topic': '',
             'comment_count': 0,
             'share_count': 0,
-            'up_count': up_count if 'w' not in up_count else str(float(up_count[0:-1]) * 10000), # 该字段内容格式举例：7.2w，表示72000
+            'up_count': up_count if 'w' not in up_count else str(float(up_count[0:-1]) * 10000),  # 该字段内容格式举例：7.2w，表示72000
             'down_count': 0,
             'play_count': 0,
             'duration': 0,  # 没有相关字段？
@@ -62,11 +53,7 @@ class DouYin(object):
         _dytk_re = re.compile(r"dytk: '(.+)'")
         dytk = _dytk_re.search(share_user.text).group(1)
         try:
-            process = Popen(
-                ['node', 'byted-acrawler.js',
-                 str(uid)],
-                stdout=PIPE,
-                stderr=PIPE)
+            process = Popen(['node', 'byted-acrawler.js', str(uid)], stdout=PIPE, stderr=PIPE)
         except (OSError, IOError) as err:
             print('请先安装 node.js: https://nodejs.org/')
             sys.exit()
@@ -84,6 +71,7 @@ class DouYin(object):
     def run(self):
         user_id = '193720797'
         print(len(self.get_video_urls(user_id)))
+
 
 if __name__ == '__main__':
     douyin = DouYin()
