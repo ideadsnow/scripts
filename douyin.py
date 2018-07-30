@@ -44,9 +44,8 @@ class DouYin(object):
         }
         return data
 
-    def get_video_urls(self, user_id):
+    def get_video_urls(self, uid):
         aweme_count = 32767  # html['user_list'][0]['user_info']['aweme_count']
-        uid = '82033562459'
         share_user_url = 'https://www.amemv.com/share/user/%s' % uid
         share_user = requests.get(
             share_user_url, headers=self.headers, verify=False)
@@ -69,7 +68,7 @@ class DouYin(object):
         return results
 
     def run(self):
-        user_id = '193720797'
+        user_id = '82033562459'
         print(len(self.get_video_urls(user_id)))
 
 
