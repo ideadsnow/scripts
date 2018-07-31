@@ -17,9 +17,12 @@ def prometheus_register(host, project, port):
     print json.dumps(body)
     response = requests.put(url, headers=headers, data=json.dumps(body))
     print response, response.content
+    print '------------------'
 
 
 if __name__ == "__main__":
-    #[prometheus_register('t-qiushi-app7', 'qb-app', port) for port in range(8610, 8660)]
-    prometheus_register('t-pic2', 'qiubai_video', 19999)
+    [prometheus_register('t-pic2', 'qiubai_video', port) for port in range(7970, 7978)]
+    [prometheus_register('t-pic2', 'qiubai_video', port) for port in range(9300, 9310)]
+    [prometheus_register('t-pic2', 'qiubai_video', port) for port in range(12998, 13000)]
+    #  prometheus_register('t-pic2', 'qiubai_video', 19999)
 
