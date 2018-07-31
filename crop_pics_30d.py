@@ -2,7 +2,6 @@
 
 import sys
 import os
-import shutil
 import subprocess
 import time
 from PIL import Image
@@ -23,7 +22,8 @@ def process(arg):
         for file in files:
             f = os.path.join(root, file)
 
-            if 'small' not in f:
+            if 'origin' != root.split('/')[-1]:
+                print('{} is not origin dir'.format(root))
                 continue
 
             if f.endswith('jpg') or f.endswith('jpeg'):
@@ -31,21 +31,29 @@ def process(arg):
                 if time.time() - os.stat(f).st_ctime > 2678400:
                     continue
 
-                shutil.copyfile(f, f + '.bak')  # 备份
+                print('{} processing...'.format(f))
                 im = Image.open(f)
                 width, height = im.size
 
-                if height / width <= 3:
+                to = root[:-7] + 'small' + file
+                print('to: {}'.format(to))
+
+                exit()
+
+                if height / width <= 2:
+                    #  subprocess.call([
+                        #  'convert', '-strip', 'resize', '"500x1000>"', f, to
+                    #  ])
                     continue
 
                 crop_h = width / 0.46
                 subprocess.call([
-                    'convert', f, '-crop', '%dx%d+0+0' % (width, crop_h), f
+                    'convert', f, '-crop', '%dx%d+0+0' % (width, crop_h), to
                 ])
                 print('croped: %s' % f)
 
                 subprocess.call([webp_cmd, f, '-o', f.split('.')[0] + '.webp'])
-                print('webp generated: %s', f)
+                print('webp generated: %s', to)
 
 
 if __name__ == '__main__':
