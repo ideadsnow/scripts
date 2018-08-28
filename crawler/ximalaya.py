@@ -68,28 +68,48 @@ headers2 = {
 }
 
 
+category_urls = [
+    'https://www.ximalaya.com/youshengshu/'
+]
+
 album_urls = [
-    'https://www.ximalaya.com/youshengshu/14495260/',
-    'https://www.ximalaya.com/xiangsheng/16313345/',
-    'https://www.ximalaya.com/xiangsheng/3196/',
-    'https://www.ximalaya.com/xiangsheng/8133373/',
-    'https://www.ximalaya.com/xiangsheng/10218348/',
-    'https://www.ximalaya.com/xiangsheng/3210/',
+    # 'https://www.ximalaya.com/youshengshu/14495260/',
+    # 'https://www.ximalaya.com/xiangsheng/16313345/',
+    # 'https://www.ximalaya.com/xiangsheng/3196/',
+    # 'https://www.ximalaya.com/xiangsheng/8133373/',
+    # 'https://www.ximalaya.com/xiangsheng/10218348/',
+    # 'https://www.ximalaya.com/xiangsheng/3210/',
 
 ]
 
 page_urls = []
 
 
-def get_urls():
+def get_album_urls():
+    for url in category_urls:
+        html = requests.get(url, headers=headers2).text
+        total_page_num = int(etree.HTML(html).xpath('(//ul[@class="Yetd pagination-page"]//span[@class="Yetd"])[last()]/text()')[0])
+        print('{} 获取到的类别分页数：{}'.format(url, total_page_num))
+        for num in range(1, total_page_num+1):
+            sub_category_page = '{}p{}'.format(url, str(num))
+            print('专辑 URL: {}'.format(sub_category_page))
+            # 每个分类页获取专辑信息
+            sub_html = requests.get(sub_category_page, headers=headers2).text
+            temp_album_urls = ['https://www.ximalaya.com'+uri for uri in etree.HTML(html).xpath('//a[contains(concat(" ", @class, " "), "album-title")]/@href')]
+            # print(temp_album_urls)
+            album_urls.extend(temp_album_urls)
+    print('获取到的全部专辑 URL 总数： {}'.format(len(album_urls)))
+
+
+def get_page_urls():
     """获取 album_urls 中每个专辑的全部分页，并将子页面的 url 加入 page_urls 中"""
     for url in album_urls:
         html = requests.get(url, headers=headers2).text
         more_pages = etree.HTML(html).xpath('//a[@class="Yetd page-link"]/@href')
         total_page_num = len(more_pages)
-        print('{} 获取到的子页面数：{}'.format(url, total_page_num))
-        page_urls.extend([url+'p'+str(page_num) for page_num in range(1, total_page_num+1)])
-    time.sleep(1)
+        print('{} 获取到的专辑分页数：{}'.format(url, total_page_num))
+        page_urls.extend(['{}p{}'.format(url, str(page_num)) for page_num in range(1, total_page_num+1)])
+    print('待爬取的全部节目数： {}'.format(len(page_urls)))
 
 
 async def fetch(url):
@@ -152,10 +172,11 @@ if __name__ == '__main__':
     os.makedirs(DEST_DIR, exist_ok=True)
     start = time.time()
 
-    get_urls()
+    get_album_urls()
+    get_page_urls()
 
     loop = asyncio.get_event_loop()
-    sem = asyncio.Semaphore(4)
+    sem = asyncio.Semaphore(10)
     tasks = [parser(sem, url) for url in page_urls]
     loop.run_until_complete(asyncio.gather(*tasks))
     loop.close()
