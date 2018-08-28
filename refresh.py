@@ -28,17 +28,5 @@ def refresh(urls):
 
 if __name__ == "__main__":
     urls = []
-    # for file in ['hot.png', 'prefer.png', 'promote.png']:
-    #     typo = file.split('.')[0]
-    #     for pl in ['ios', 'android']:
-    #         key = 'sub_{}_{}_night.png'.format(pl, typo)
-    #         print '*' * 3, manager.delete(bucket, key)
-    #         upload(file, key)
-    #         urls.append('http://pic.qiushibaike.com/{}'.format(key))
-    #         urls.append('https://pic.qiushibaike.com/{}'.format(key))
-    for id in ['120747119', '120747128', '120747130', '120747132', '120747179']:
-        for t in ['small', 'medium']:
-            key = 'system/pictures/12074/%s/%s/app%s.jpeg' % (id, t, id)
-            urls.append('https://pic.qiushibaike.com/%s' % key)
-    print urls
-    refresh(urls)
+    upload('top_logo.png', 'share/images/qbshare/banner.png')
+
