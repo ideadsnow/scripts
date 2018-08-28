@@ -161,8 +161,6 @@ async def parser(sem, page_url):
             resp = requests.get(murl, headers=headers1)
             try:
                 sound_info = resp.json()
-            except CancelledError:
-                raise
             except Exception as e:
                 continue
                 # print(e)
@@ -176,8 +174,6 @@ async def parser(sem, page_url):
             try:
                 path = os.path.join(save_dir, str(sound_info['id'])+'.'+sound_info['play_path_64'].split('.')[-1])
                 await download(sound_info['play_path_64'], path)
-            except CancelledError:
-                raise
             except Exception as e:
                 print(e)
                 continue
