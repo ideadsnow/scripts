@@ -180,13 +180,20 @@ async def parser(sem, page_url):
         print('{} 爬取完成'.format(page_url))
 
 
+def write_list_to_file(l, path):
+    with open(path, 'wb') as f:
+        for e in l:
+            f.write('{}\n'.format(e))
+
 
 if __name__ == '__main__':
     os.makedirs(DEST_DIR, exist_ok=True)
     start = time.time()
 
     get_album_urls()
+    write_list_to_file(album_urls, 'album_urls')
     get_page_urls()
+    write_list_to_file(page_urls, 'page_urls')
 
     loop = asyncio.get_event_loop()
     sem = asyncio.Semaphore(10)
