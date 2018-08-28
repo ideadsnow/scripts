@@ -70,6 +70,12 @@ headers2 = {
 
 album_urls = [
     'https://www.ximalaya.com/youshengshu/14495260/',
+    'https://www.ximalaya.com/xiangsheng/16313345/',
+    'https://www.ximalaya.com/xiangsheng/3196/',
+    'https://www.ximalaya.com/xiangsheng/8133373/',
+    'https://www.ximalaya.com/xiangsheng/10218348/',
+    'https://www.ximalaya.com/xiangsheng/3210/',
+
 ]
 
 page_urls = []
@@ -111,10 +117,13 @@ async def download(url, path):
                     #     break
                     # lp = asyncio.get_event_loop()
                     # lp.run_in_executor(None, save_file, fd, chunk)
-                    chunk = await resp.content.read(4096)
-                    if not chunk:
-                        break
-                    fd.write(chunk)
+                    try:
+                        chunk = await resp.content.read(4096)
+                        if not chunk:
+                            break
+                        fd.write(chunk)
+                    except Exception as e:
+                        print(e)
 
 
 # 获取专辑页面中曲目的 ids，并根据接口去获取
