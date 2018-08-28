@@ -142,8 +142,6 @@ async def download(url, path):
                         if not chunk:
                             break
                         fd.write(chunk)
-                    except CancelledError:
-                        raise
                     except Exception as e:
                         break
                         print(e)
@@ -183,7 +181,7 @@ async def parser(sem, page_url):
 def write_list_to_file(l, path):
     with open(path, 'wb') as f:
         for e in l:
-            f.write('{}\n'.format(e))
+            f.write('{}\n'.format(e).encode())
 
 
 if __name__ == '__main__':
