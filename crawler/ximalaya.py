@@ -142,9 +142,12 @@ async def download(url, path):
                         if not chunk:
                             break
                         fd.write(chunk)
+                    except CancelledError:
+                        raise
                     except Exception as e:
                         break
                         print(e)
+
 
 
 # 获取专辑页面中曲目的 ids，并根据接口去获取
@@ -158,9 +161,11 @@ async def parser(sem, page_url):
             resp = requests.get(murl, headers=headers1)
             try:
                 sound_info = resp.json()
+            except CancelledError:
+                raise
             except Exception as e:
                 continue
-                print(e)
+                # print(e)
 
             # print(sound_info)
             print(sound_info['play_path_64'])
@@ -168,8 +173,14 @@ async def parser(sem, page_url):
             # 保存文件名格式：${DEST_DIR}/${album_id}/${sound_id}.${format}
             save_dir = os.path.join(DEST_DIR, str(sound_info['album_id']))
             os.makedirs(save_dir, exist_ok=True)
-            path = os.path.join(save_dir, str(sound_info['id'])+'.'+sound_info['play_path_64'].split('.')[-1])
-            await download(sound_info['play_path_64'], path)
+            try:
+                path = os.path.join(save_dir, str(sound_info['id'])+'.'+sound_info['play_path_64'].split('.')[-1])
+                await download(sound_info['play_path_64'], path)
+            except CancelledError:
+                raise
+            except Exception as e:
+                print(e)
+                continue
         print('{} 爬取完成'.format(page_url))
 
 
