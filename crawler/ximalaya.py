@@ -89,7 +89,7 @@ def get_urls():
 async def fetch(url):
     """获取专辑页面"""
     async with aiohttp.ClientSession(headers=headers2) as session:
-        async with session.get(url) as html:
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=3)) as html:
             response = await html.text(encoding="utf-8")
             return response
 
@@ -102,7 +102,7 @@ def save_file(fd, chunk):
 async def download(url, path):
     """下载文件"""
     async with aiohttp.ClientSession(headers=headers2) as session:
-        async with session.get(url) as resp:
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=60)) as resp:
             with open(path, 'wb') as fd:
                 while 1:
                     # 先注释掉，有 bug
