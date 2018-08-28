@@ -143,6 +143,7 @@ async def download(url, path):
                             break
                         fd.write(chunk)
                     except Exception as e:
+                        break
                         print(e)
 
 
