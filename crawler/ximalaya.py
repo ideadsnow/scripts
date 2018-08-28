@@ -80,8 +80,9 @@ def get_urls():
     for url in album_urls:
         html = requests.get(url, headers=headers2).text
         more_pages = etree.HTML(html).xpath('//a[@class="Yetd page-link"]/@href')
-        print('{} 获取到的子页面数：{}'.format(url, len(more_pages)))
-        page_urls.extend(['https://www.ximalaya.com'+page_url for page_url in more_pages])
+        total_page_num = len(more_pages)
+        print('{} 获取到的子页面数：{}'.format(url, total_page_num))
+        page_urls.extend([url+'p'+str(page_num) for page_num in range(1, total_page_num+1)])
     time.sleep(1)
 
 
