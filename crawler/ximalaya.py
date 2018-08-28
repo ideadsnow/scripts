@@ -155,7 +155,12 @@ async def parser(sem, page_url):
             sound_id = url.split('/')[-1]
             murl = 'http://www.ximalaya.com/tracks/{}.json'.format(sound_id)
             resp = requests.get(murl, headers=headers1)
-            sound_info = resp.json()
+            try:
+                sound_info = resp.json()
+            except Exception as e:
+                continue
+                print(e)
+
             # print(sound_info)
             print(sound_info['play_path_64'])
 
