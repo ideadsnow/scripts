@@ -197,10 +197,13 @@ if __name__ == '__main__':
     start = time.time()
 
     get_album_urls()
+    # 保存中间结果到文件，避免偶尔异常终端程序后又要重跑
     write_list_to_file(album_urls, 'album_urls')
     get_page_urls()
+    # 保存中间结果到文件，避免偶尔异常终端程序后又要重跑
     write_list_to_file(page_urls, 'page_urls')
 
+    # 异步爬虫，限制10个并发量
     loop = asyncio.get_event_loop()
     sem = asyncio.Semaphore(10)
     tasks = [parser(sem, url) for url in page_urls]
