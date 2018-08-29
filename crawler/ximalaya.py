@@ -116,7 +116,11 @@ async def fetch(url):
     """获取专辑页面"""
     async with aiohttp.ClientSession(headers=headers2) as session:
         async with session.get(url, timeout=aiohttp.ClientTimeout(total=3)) as html:
-            response = await html.text(encoding="utf-8")
+            try:
+                response = await html.text(encoding="utf-8")
+            except Exception as e:
+                print(e)
+                return
             return response
 
 
@@ -151,7 +155,11 @@ async def download(url, path):
 # 获取专辑页面中曲目的 ids，并根据接口去获取
 async def parser(sem, page_url):
     async with sem:
-        html = await fetch(page_url)
+        try:
+            html = await fetch(page_url)
+        except Exception as e:
+            print(e)
+            return
         sound_urls = etree.HTML(html).xpath('//div[@class="dOi2 sound-list"]//div[@class="dOi2 text"]//a/@href')
         for url in sound_urls:
             sound_id = url.split('/')[-1]
